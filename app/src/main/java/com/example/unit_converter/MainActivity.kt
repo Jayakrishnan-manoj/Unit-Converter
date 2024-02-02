@@ -12,11 +12,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unit_converter.ui.theme.UnitConverterTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,24 +43,29 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(myViewModel: MyViewModel = viewModel()) {
+
+    var inputTemp by remember {
+        mutableStateOf("0")
+    }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Unit Converter App", fontSize = 32.sp)
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = inputTemp,
+            onValueChange = { enteredTemp: String -> inputTemp = enteredTemp },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(text = "Enter temperature") },
             singleLine = true,
         )
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { myViewModel.convertTemp(inputTemp) }) {
             Text(text = "Convert")
 
         }
 
-        Text(text = "The temperature in celcius:", fontSize = 30.sp)
+        Text(text = "The temperature in celcius: \n ${myViewModel.tempC}", fontSize = 30.sp)
     }
 }
 
